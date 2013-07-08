@@ -29,9 +29,17 @@ local socket = require "socket"
 pcall(require, "socket.unix");
 local base64 = require "util.encodings".base64;
 local b64, unb64 = base64.encode, base64.decode;
-local jid_escape = require "util.jid".escape;
 local prepped_split = require "util.jid".prepped_split;
 local nodeprep = require "util.encodings".stringprep.nodeprep;
+
+local escapes = {
+	[" "] = "\\20"; ['"'] = "\\22";
+	["&"] = "\\26"; ["'"] = "\\27";
+	["/"] = "\\2f"; [":"] = "\\3a";
+	["<"] = "\\3c"; [">"] = "\\3e";
+	["@"] = "\\40"; ["\\"] = "\\5c";
+};
+local function jid_escape(s) return s and (s:gsub(".", escapes)); end
 
 --module "sasl_dovecot"
 local _M = {};
